@@ -73,6 +73,56 @@ const getAssetById = async(req,res) => {
         })
     }
 }
+const getAssetByCurrentUser = async(req,res) => {
+    const  UserId = req.uuid;
+
+    try {
+        const assets = await Asset.findAll({ where: { UserId },include: [ { model: User, attributes: ['username','name'] } ]});
+
+        if(!assets) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Asset can not found'
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            totalFound: assets.length,
+            assets
+        });
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Something wrong happen when was try to get asset'
+        })
+    }
+}
+const getAssetByUserId = async(req,res) => {
+    const  UserId = req.params.UserId;
+
+    try {
+        const assets = await Asset.findAll({ where: { UserId },include: [ { model: User, attributes: ['username','name'] } ]});
+
+        if(!assets) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Asset can not found'
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            totalFound: assets.length,
+            assets
+        });
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Something wrong happen when was try to get asset'
+        })
+    }
+}
 const updateAssetById = async(req,res) => {
     let id = req.params.id;
     const UserId = req.uuid;
@@ -232,4 +282,6 @@ module.exports = {
     deleteAssetById,
     getAssetsByIds,
     importAssets,
+    getAssetByCurrentUser,
+    getAssetByUserId
 }
